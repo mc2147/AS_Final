@@ -22,6 +22,9 @@ Levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 RPEs = [["1-2", 1], ["3-4", 3], ["5-6", 5], ["7", 7], ["8", 8], ["8.5", 8.5], ["9", 9], ["9.5", 9.5], ["10", 10]]
 RPEs.reverse()
 
+def Contact_And_Support(request): 
+	return render(request, "contact.html")
+
 def User_Profile(request):
 	context = {}
 	_User = request.user

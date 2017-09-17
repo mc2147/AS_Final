@@ -57,14 +57,15 @@
             <li><a href="{%url 'videos' %}">Videos</a></li>
             <li><a href="{%url 'pastworkouts' %}">Past Workouts</a></li>
             <li><a href="{%url 'userprofile' %}">Profile</a></li>
-            <li><a href="{%url 'userpage' %}">Contact & Support</a></li>
+            <li><a href="{%url 'contact' %}">Contact & Support</a></li>
             <li><a href="{%url 'logout' %}">Logout</a></li>
         </ul>
     </div>
 
     <hr>
 
-    <img src='{% static "userpage/header_design.svg" %}'>
+    <img id='user_design_img' src='{% static "userpage/header_design.svg" %}'>
+
 <form method="POST" id="Calendar_Form">{% csrf_token %}
     <div id="left_container">
         <div id="date_text_container">

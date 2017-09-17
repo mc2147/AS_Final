@@ -36,7 +36,7 @@
 <!-- Body --> 
 <body>
     <div id='header-left'>
-        <h1>Welcome, {{first_name}}!</h1>
+        <h1>Contact & Support</h1>
     </div>
 
     <div id='header-right'>
@@ -46,14 +46,15 @@
             <li><a href="{%url 'userpage' %}">Past Workouts</a></li>
             <li><a href="{%url 'userprofile' %}">Profile</a></li>
             <li><a href="{%url 'contact' %}" class='page-active'>Contact & Support</a></li>
+            <li><a href="{%url 'logout' %}">Logout</a></li>
         </ul>
     </div>
 
     <hr>
 
-    <img src='{% static "userpage/header_design.svg" %}'>
+    <img id='user_design_img' src='{% static "userpage/header_design.svg" %}'>
 
-    <h1>Contact & Support</h1>
+    <h1>Staff Information</h1>
     <hr class='title-divider'>
 
     <div id='contact-container'>

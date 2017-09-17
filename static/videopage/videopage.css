@@ -1,8 +1,10 @@
 body, p {
 	font-family: "Cabin", sans-serif;
+	display: block;
+    margin: 8px;
 }
 
-h1, h2, h3, h4, h5 {
+h2, h3, h4, h5 {
 	font-family: 'Cabin', sans-serif;
 	font-size: 1.5vw;
 	padding: 0;
@@ -40,24 +42,6 @@ h1, h2, h3, h4, h5 {
 	text-align: center;
 }
 
-hr {
-	border-top: 1vw solid rgba(0, 0, 0, 0.9);
-	padding: 0;
-	margin: 0;
-	margin-top: 2vw; 
-	width: 100%;
-	margin-left: -1%;
-	position: relative;
-}
-
-#user_design {
-	position: absolute;
-	top: -0.1vw;
-	width: 22.5%;
-	height: auto;
-	left: 80%;
-}
-
 .editable_div {
 	display: inline-block;
 }
@@ -76,28 +60,6 @@ hr {
 #right_container {
 	float: right;
 	width: 50%;
-}
-
-.mdl-tabs {
-	margin: 0 auto !important;
-}
-
-.mdl-tabs__tab {
-	height: 2vw;
-	line-height: 2vw;
-	padding: 0 1.25vw;
-}
-
-.mdl-tabs__tab.is-active {
-	color: white !important;
-}
-
-.mdl-tabs__tab-bar {
-	font-size: 1vw;
-	height: 4% !important;
-	padding: 0;
-	background-color: cornflowerblue;
-	border-radius: 0.5vw;
 }
 
 #video_tabs {
@@ -138,87 +100,9 @@ hr {
 }
 
 
-table.ui-datepicker-calendar{
-    font-size: 0.75vw;
-    width: 100%;
-    height: auto;
-    border-collapse: collapse;
-}
-
-table.ui-datepicker-calendar td {
-	padding: 1vw;
-	border: 1px solid rgba(0, 10, 125, 0.2);
-	text-decoration: none;
-}
-
-table.ui-datepicker-calendar th {
-	padding: 0.15vw;
-	font-style: bold;
-	background-color: cornflowerblue;
-
-}
-
-
-#datepicker {
-	margin: 0 auto;
-	width: 80%;
-}
-
-#summary {
-	border: 1px solid black;
-	font-size: 1vw;
-	padding: 2vw;
-	width: 70%;
-	margin: 0 auto;
-	margin-top: 2vw;
-
-}
-
 #dummy_divider {
 	border-top: 1px solid rgba(0, 0, 0, 0.3);
 	width: 80%;
 	margin: 0 auto;
 	margin-bottom: 2vw;
-}
-
-#nav-bar {
- list-style: none;
- display: flex;
-}
-
-#nav-bar a {
- font-size: 1vw; 
- padding: 0.5vw 1vw; 
- text-decoration: none;
- color: white;
- background-color: rgb(19, 44, 181); / dark blue / 
- margin: 0.5vw;
- text-transform:UPPERCASE;
- border-radius: 0.25vw;
- border-bottom: 0.2vw solid rgba(0, 0, 0, 0.3); / light gray / 
-}
-#nav-bar li {
-	margin:0.5vw;
-}
-
-#header-left h1 {
- padding-left:1vw;
- float: left;
- font-size: 2vw;
- padding-top: 1vw;
- font-family: "Cabin", sans-serif;
- font-weight: 600;
-}
-
-#header-right {
- float: right;
- margin: 0;
- margin-right: 20%;
- margin-top: 1.5vw;
-}
-
-#nav-bar .page-active {
- background-color: rgb(4, 23, 125);
- box-shadow: 0 0 1vw 0.2vw rgba(0, 38, 255, 0.56);
- border-bottom: 0.2vw solid rgba(255, 255, 255, 0.85);
 }

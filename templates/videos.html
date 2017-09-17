@@ -15,14 +15,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-
-    <!-- Material Design code -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.blue_grey-indigo.min.css" />
-    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   
     <!-- Style Sheets -->
+    <link rel="stylesheet" href="{% static 'userpage/userpage.css' %}">
     <link rel="stylesheet" href="{% static 'videopage/videopage.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Cabin:400,600,700" rel="stylesheet">
 
@@ -33,7 +28,7 @@
 
 <!-- Body --> 
 <body>
-    <div id='header-left'>
+     <div id='header-left'>
         <h1>Video Library</h1>
     </div>
 
@@ -42,16 +37,15 @@
             <li><a href="{%url 'userpage' %}">Home</a></li>
             <li><a href="{%url 'videos' %}" class='page-active'>Videos</a></li>
             <li><a href="{%url 'pastworkouts' %}">Past Workouts</a></li>
-            <li><a href="{%url 'userpage' %}">Profile</a></li>
-            <li><a href="{%url 'userpage' %}">Contact & Support</a></li>
+            <li><a href="{%url 'userprofile' %}">Profile</a></li>
+            <li><a href="{%url 'contact' %}">Contact & Support</a></li>
+            <li><a href="{%url 'logout' %}">Logout</a></li>
         </ul>
     </div>
 
     <hr>
-<!--     <h1 id='title'>Training Library</h1>
-    <hr>
- -->
-    <img id="user_design" src='{% static "userpage/user_interface.svg" %}'>
+
+    <img id='user_design_img' src='{% static "userpage/header_design.svg" %}'>
 
     <div id='titles'>
         <h2>{{Video_Title}}</h2>
