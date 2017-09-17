@@ -132,28 +132,54 @@
       {% for Day in Week.1 %}
       <div style="display:inline-block;">
       <form method="GET" style="display:inline-block; margin-right:10px;">
-      <h4 style="margin-bottom:2px; margin-top:2px;">{{Day.0}}</h4>
-          <!-- <div style="margin-right:55px; float:left;">&nbsp </div>  -->
-          <div style="margin-left:50px;">
-          Exercise Type | Sets x Reps | RPE | Deload | Money</div>
-          <!-- <br> -->
-            {% for Sub in Day.1 %}
-            {{Sub.3}}
-       <!-- {{Sub.0}} {{Sub.4}} {{Sub.2}}            -->
+      <h4 style="margin-bottom:2px; margin-top:2px;">{{Day.0}}
+      <!-- Alloy: -->
+      {% for Alloy in Day.3 %}
+        <select style="font-size:1vw; background-color:yellow; float:right;" name="Type">
+          <option value="A" style="">Alloy</option>
+          <option value="R">Regular</option>
+        </select>
+      {% endfor %}      
+      {% for Regular in Day.4%}
+        <select style="font-size:1vw; float:right;" name="Type">
+          <option value="R">Regular</option>
+          <option value="A" style="">Alloy</option>
+        </select>
+      {% endfor %}      
+      </h4>
+      <table style="border: 1px solid black;">
+        <tr>
+        <th>Exercise Type</th>
+        <th>Sets</th>
+        <th>Reps</th>
+        <th>RPE</th>
+        <th>Deload</th>
+        {% for Alloy in Day.3 %}
+        <th>Alloy</th>
+        {% endfor %}
+        <!-- <th>Varied Sets</th> -->
+        </tr>
+        {% for Sub in Day.1 %}
+        <tr>
+        <td>          
           <select name="Type_{{Sub.5}}">
             <option value="{{Sub.0}}">{{Sub.0}}</option>
             {% for Type in Exercise_Types %}
             <option value="{{Type}}">{{Type}}</option>
             {% endfor %}
           </select> 
-          <input style="" type="text" placeholder="{{Sub.4}}" name="Sets_{{Sub.5}}">
-          x
-          <input style="" type="text" placeholder="{{Sub.2}}" name="Reps_{{Sub.5}}">
-          <input style="margin-left:5px;" type="text" placeholder="{{Sub.6}}" name="RPE_{{Sub.5}}">
-          <input style="margin-left:5px;" type="text" placeholder="{{Sub.7}}" name="Deload_{{Sub.5}}">
-          <input style="margin-left:15px;" margin-left:10px;" type="text" placeholder="{{Sub.8}}" name="Money_{{Sub.5}}">
-          <br>
+        </td>
+        <td><input style="width:3vw;" type="text" placeholder="{{Sub.4}}" name="Sets_{{Sub.5}}"></td>
+        <td><input style="width:3vw;" type="text" placeholder="{{Sub.2}}" name="Reps_{{Sub.5}}"></td>
+        <td><input style="margin-left:5px;" type="text" placeholder="{{Sub.6}}" name="RPE_{{Sub.5}}"></td>
+        <td><input style="margin-left:5px;" type="text" placeholder="{{Sub.7}}" name="Deload_{{Sub.5}}"></td>
+        {% for Alloy in Day.3 %}
+        <td><input style="" type="text" placeholder="{{Sub.8}}" name="Money_{{Sub.5}}"></td>
+        {% endfor %}
+        <!-- <td><input style="width: 3vw;"  type="text" placeholder="None" name="Money_{{Sub.5}}"></td> -->
+        </tr>
         {% endfor %}    
+      </table>
          <input type="submit" style="width:50px;" name="{{Week.2}}{{Day.2}}_Update_Workout" value="Update">
       </div>
         </form>

@@ -19,13 +19,26 @@ class Member(models.Model):
 	Squat = models.IntegerField(default=0)
 	# Password
 	
-class Max(models.Model):
-	Member = models.ForeignKey(Member, related_name="Maxes")
+class Stat(models.Model):
+	Type = models.CharField(default="", max_length=200)
+	Member = models.ForeignKey(Member, related_name="Stats")
 	Exercise_Name = models.CharField(default="", max_length=200)
-	Weight = models.IntegerField(default=0)
+	Max = models.IntegerField(default=0)
+	Suggested_Weight = models.IntegerField(default=0)
+	Alloy_Weight = models.IntegerField(default=0)
 	Updated = models.BooleanField(default=False)
 	Alloy_Reps = models.IntegerField(default=0)
+	Alloy_Performance_Reps = models.IntegerField(default=0)
 	Level_Up = models.BooleanField(default=False)
+	Core = models.BooleanField(default=True)
+	Level = models.IntegerField(default=0)
+	Failed = models.BooleanField(default=False)
+	def Reset(self):
+		self.Failed = False
+		self.Updated = False
+		self.Level_Up = False
+		self.Max = 0
+
 	# Email
 
 # Specific exercise as in 'All Levels'
@@ -39,6 +52,7 @@ class Exercise(models.Model):
 	Type = models.CharField(default="", max_length=200)
 	Level = models.IntegerField(default=0)
 	Bodyweight = models.BooleanField(default=False)
+	Tempo = models.BooleanField(default=False)
 
 
 class Set(models.Model):
@@ -58,14 +72,17 @@ class SubWorkout(models.Model):
 	Exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, blank=True, null=True)
 	Exercise_Type = models.CharField(default="", max_length=200)
 	Sets = models.IntegerField(default=0)
+	Filled_Sets = models.IntegerField(default=0)
 	Reps = models.IntegerField(default=0)
 	Order = models.IntegerField(default=0)
 	RPE = models.CharField(default="", max_length=3)
 	Deload = models.IntegerField(default=0)
-	Money = models.IntegerField(default=0)
+	Money = models.IntegerField(default=0, null=True)
 	Alloy = models.BooleanField(default=False)
+	Show_Alloy = models.BooleanField(default=False)
 	Alloy_Reps = models.IntegerField(default=0)
-	Set_Stats = models.CharField(default=",,/,,/,,/,,", max_length=300)
+	Alloy_Weight = models.IntegerField(default=0)
+	Set_Stats = models.CharField(default="", max_length=300)
 	Set_1 = models.CharField(default="", max_length=20)
 	Set_2 = models.CharField(default="", max_length=20)
 	Set_3 = models.CharField(default="", max_length=20)
@@ -93,8 +110,11 @@ class Workout_Template(models.Model):
 	Block_Num = models.IntegerField(default=0)
 	Block = models.CharField(default="", max_length=200)
 	Alloy = models.BooleanField(default=False)
+	First = models.BooleanField(default=False)
+	Last = models.BooleanField(default=False)
 
 class Workout(models.Model):
+	Show_Alloy_Weights = models.BooleanField(default=False)
 	Alloy = models.BooleanField(default=False)
 	Last_Alloy = models.BooleanField(default=False)
 	Last_Workout = models.BooleanField(default=False)

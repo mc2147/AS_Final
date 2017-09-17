@@ -37,7 +37,12 @@ urlpatterns = [
     url(r'^member-home/', Member_Home, name='Home'),
     url(r'^test/', Test, name='Test'),
 
+    url(r'^tutorial/', Tutorial, name="tutorial"),
+
     url(r'^userpage/', User_Page, name="userpage"),
+
+    url(r'^userpage-alloy/', User_Page_Alloy, name="userpage_alloy"),
+
     url(r'^level-up/', Level_Up, name="levelup"),
     url(r'^userpageUpdate/', Workout_Update, name="userpageUpdate"),
     url(r'^userpageRPEUpdate/', RPE_Update, name="userpageRPEUpdate"),

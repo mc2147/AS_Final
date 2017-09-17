@@ -7,7 +7,6 @@
 <script src='https://unpkg.com/vue'></script>
 <!-- <script src="https://code.getmdl.io/1.3.0/material.min.js"></script> -->
 
-
 <!-- Include HTML Code -->
 <!-- Head --> 
 <head>
@@ -29,6 +28,14 @@
     <link href="https://fonts.googleapis.com/css?family=Cabin:400,600,700" rel="stylesheet">
 
     <title>User Profile</title>
+<style>
+
+td, th {
+    padding-left:1vw;
+    width:15vw;
+}
+
+</style>
 
 </head>
 
@@ -85,12 +92,32 @@
                 <h1> Physical Stats <h1>
             </div>
 
-            <div class='userprofile-col-3' id='training-background'> 
+<!--             <div class='userprofile-col-3' id='training-background'> 
                 <h1> Training Background <h1>
             </div>
-
-            <div class='userprofile-col-3'> 
-                <h1> Known Max Lifts </h1>
+ -->
+            <div class='userprofile-col-6' style="padding:2vw; padding-top:1vw;"> 
+                <h1 style="margin-top:0vw;"> Estimated Max Lifts </h1>
+                <table style="text-align:left; ">
+                <tr>
+                    <th>
+                    Exercise Type
+                    </th>
+                    <th>
+                    Exercise Name
+                    </th>
+                    <th>
+                    Max (lbs)
+                    </th>
+                </tr>
+                {% for Stat in Stats %}
+                <tr>
+                <td>{{Stat.0}}</td>
+                <td>{{Stat.1}}</td>
+                <td>{{Stat.2}}</td>
+                </tr>
+                {% endfor %}
+                </table>
             </div>
         </div>
 

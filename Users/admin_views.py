@@ -165,6 +165,14 @@ def AdminExercises(request):
 	context["Level_Groups"] = [["1-5", 1], ["6-10", 2], ["11-15", 3], ["16-20", 4], ["21-25", 5]]
 	# print("Context Levels: " + str(context["Levels"][0]))
 
+	All_Exercises = Exercise.objects.all()
+	for _Exercise in All_Exercises:
+		if "Tempo" in _Exercise.Name:
+			print(_Exercise.Name + " Level: " + str(_Exercise.Level))
+			_Exercise.Tempo = True
+			_Exercise.save()
+	# All_Templates = Workout_Template.objects.all()
+	# for _Temp
 
 	if request.method == "POST":
 		# print("Post Detected")
@@ -310,14 +318,67 @@ def Admin_Workouts(request):
 	["Week 3", [["Day 1", [[], [], [], [], [], []], "D1"], ["Day 2", [[], [], [], [], [], []], "D2"], ["Day 3", [[], [], [], [], [], []], "D3"]], "W3"], 
 	["Week 4", [["Day 1", [[], [], [], [], [], []], "D1"], ["Day 2", [[], [], [], [], [], []], "D2"], ["Day 3", [[], [], [], [], [], []], "D3"]], "W4"]]
 
+
+	context["Templates"] = []
+	Weeks = [1, 2, 3, 4]
+	Days = [1, 2, 3]
+	
+	for _Template in Workout_Template.objects.filter(Level_Group=1):
+		Template_Dict = {}
+		Template_Dict["Regular"] = ["True"]
+		Button_Code = "W" + str(_Template.Week) + "D" + str(_Template.Day) + "_Update_Workout"
+		Template_Dict["Button_Code"] = Button_Code
+
+		Empty_Sets = 6 - _Template.SubWorkouts.all().count()
+
+		if _Template.Alloy:
+			Template_Dict["Regular"] = []
+			Template_Dict["Alloy"] = ["True"]
+
+		for N in _Template.SubWorkouts.all():
+			Sub_Dict = {}
+			Sub_Dict["Exercise_Type"] = [N.Exercise_Type, N.pk]
+			Sub_Dict["Sets"] = [N.Sets, N.pk]
+			Sub_Dict["Reps"] = [N.Reps, N.pk]
+			Sub_Dict["RPE"] = [N.RPE, N.pk]
+			Sub_Dict["Deload"] = [N.Deload, N.pk]
+			Sub_Dict["Alloy"] = []
+
+			if _Template.Alloy:
+				Sub_Dict["Alloy"] = [N.Money, N.pk]
+
+		context["Templates"].append(Template_Dict)
+
+		if request.GET.get(Button_Code):
+			print("BUTTON PRESSED")
+			print(request.GET.keys())
+
+	print("N Workouts: " + str(Workout_Template.objects.filter(Level_Group=1).count()))
 	for i in Workout_Template.objects.filter(Level_Group=1):
 		_week_index = i.Week - 1 #Workout_Templates[index]
-		_day_index = i.Day - 1 #Workout_Templates[week][1][_day_index]		
+		_day_index = i.Day - 1 #Workout_Templates[week][1][_day_index]	
+		if i.Ordered_ID == 1:
+			i.First = True
+			i.save()
+			# print("First Workout Template: " + str(i.Ordered_ID))	
+		elif i.Ordered_ID == Workout_Template.objects.filter(Level_Group=1).count():
+			i.Last = True
+			i.save()
+		# 	print("Last Workout Template: " + str(i.Ordered_ID))	
+		# else:
+		# 	print("Workout Template: " + str(i.Ordered_ID))	
+
 		# i.Level_Group = 1
 		# i.save()
 		# print("Existing Workout Template: " + "Week " + str(i.Week) + " Day " + str(i.Day) + " Ordered ID: " + str(i.Ordered_ID) + " Level Group: " + str(i.Level_Group))
 		Num_Sets = i.SubWorkouts.all().count()
 		Empty_Sets = 6 - i.SubWorkouts.all().count()
+		if i.Alloy:
+			context["Workout_Templates"][_week_index][1][_day_index].append(["A"])
+			context["Workout_Templates"][_week_index][1][_day_index].append([])
+		else:
+			context["Workout_Templates"][_week_index][1][_day_index].append([])
+			context["Workout_Templates"][_week_index][1][_day_index].append(["R"])
 		for x in i.SubWorkouts.all():
 			_exercise_type = x.Exercise_Type
 			_sets = x.Sets
@@ -332,7 +393,7 @@ def Admin_Workouts(request):
 				_rpe = x.RPE
 			if x.Deload != 0:
 				_deload = x.Deload
-			if x.Money != 0:
+			if x.Money != 0 and x.Money != None:
 				_money = str(x.Money) + "+" 
 			context["Workout_Templates"][_week_index][1][_day_index][1][_subworkout_index] = [_exercise_type, str(_sets) + " x ", 
 			_reps, "Set " + str(_order) + ":", _sets, _order, _rpe, _deload, _money]
@@ -357,6 +418,15 @@ def Admin_Workouts(request):
 				_Workout_Template.save()
 			if request.GET.get(btn_code):
 				print(btn_code)
+				print("Workout Type: " + request.GET["Type"])
+				
+				if request.GET["Type"] == "A":
+					_Workout_Template.Alloy = True
+					_Workout_Template.save()
+				elif request.GET["Type"] == "R":
+					_Workout_Template.Alloy = False
+					_Workout_Template.save()
+
 				for z in range(1,7):
 					# if (_Workout_Template.SubWorkouts.all().filter(Order = z).exists()):
 					# 	_Placeholder_SubWorkout = _Workout_Template.SubWorkouts.all().get(Order = z)
@@ -371,23 +441,25 @@ def Admin_Workouts(request):
 					_rpe = "RPE_" + str(z)
 					_deload = "Deload_" + str(z)
 					_money = "Money_" + str(z)
-					print(request.GET[_type])
+					# print(request.GET[_type])
 					if (request.GET.get(_type) != "" or (request.GET.get(_sets) != "" or request.GET.get(_reps) != ""
 						or request.GET.get(_rpe) != "" or request.GET.get(_deload) != "" or request.GET.get(_money) != "")):
-						print(request.GET.get(_sets))
-						print(request.GET.get(_reps))
-						print(request.GET.get(_type))
-						print(request.GET.get(_rpe))
-						print(request.GET.get(_money))
+						# print(request.GET.get(_sets))
+						# print(request.GET.get(_reps))
+						# print(request.GET.get(_type))
+						# print(request.GET.get(_rpe))
+						# print(request.GET.get(_money))
 						_Sets_ = request.GET.get(_sets)
 						_Reps_ = request.GET.get(_reps)
 						_Type_ = request.GET.get(_type)
 						_RPE = request.GET.get(_rpe)
 						_Deload = request.GET.get(_deload)
-						_Money = request.GET.get(_money)
-						print("Submitted Type: " + _Type_)
-						for n in _Workout_Template.SubWorkouts.all():
-							print("Subworkout Exercise Type: " + n.Exercise_Type)
+						_Money = ""
+						if _money in request.GET.keys():
+							_Money = request.GET[_money]
+						# print("Submitted Type: " + _Type_)
+						# for n in _Workout_Template.SubWorkouts.all():
+						# 	print("Subworkout Exercise Type: " + n.Exercise_Type)
 						# print(_Workout)
 						# print("test")
 						# print(i[0] + " " + y[0] + " Subworkout " + str(z) + ": " 
@@ -406,13 +478,14 @@ def Admin_Workouts(request):
 						if _Deload != "":
 							_SubWorkout.Deload = _Deload 
 						if _Money != "":
+							print("Money: " + _Money)
 							_SubWorkout.Money = _Money
 							_SubWorkout.Alloy = True
 							_Workout_Template.Alloy = True
 						_SubWorkout.save()
 
 						if (_Workout_Template.SubWorkouts.all().filter(Order = z).exists()):
-							print("Exists")
+							# print("Exists")
 							_Edit_SubWorkout = _Workout_Template.SubWorkouts.all().get(Order = z)
 							_Edit_SubWorkout.Exercise_Type = _Type_
 							if _Sets_ != "":
@@ -425,6 +498,7 @@ def Admin_Workouts(request):
 								_Edit_SubWorkout.Deload = _Deload 								
 							if _Money != "":
 								_Edit_SubWorkout.Money = _Money
+								print("Edited Money: " + _Money)
 								_Edit_SubWorkout.Alloy = True
 								_Workout_Template.Alloy = True
 							_Edit_SubWorkout.save()
@@ -437,136 +511,6 @@ def Admin_Workouts(request):
 					# else:
 					# 	print(i[0] + " " + y[0] + " No set ")
 				return HttpResponseRedirect("/admin-workouts")
-
-	for i in Member.objects.all():
-		row = []
-		row.append(i.pk)
-		row.append(i.User.first_name)
-		row.append(i.User.last_name)
-		row.append(i.User.username)
-		row.append(i.Level)
-		context["Users"].append(row)
-	for i in Exercise.objects.all():
-		row = []
-		row.append(i.Level)
-		row.append(i.Name)
-		row.append(i.Type)
-		context["Exercises"].append(row)
-	for i in Set.objects.all():
-		row = []
-		row.append(i.Level)
-		# row.append(i.Exercise.Name)
-		row.append(i.Reps)
-		row.append(i.Code)
-		context["Sets"].append(row)
-	for i in Workout.objects.all():
-		row = []
-		sets = ""
-		row.append(i.Level)
-		row.append(i.Week)
-		row.append(i.Day)
-		for x in i.SubWorkouts.all():
-			# _type = x.Exercise_Type
-			# _level = x.Level
-			# print(_type)
-			# print(_level)
-			# _exercise = Exercise.objects.get(Type = _type, Level = _level)
-			# x.Exercise = _exercise
-			# x.save()
-			sets = sets + x.Exercise.Name + " " + str(x.Sets) + " x " + str(x.Reps) + ", "
-		row.append(sets)
-		context["Workouts"].append(row)
-
-	if(request.GET.get("refresh")):
-		return HttpResponseRedirect("/admin-workouts")
-
-	if(request.GET.get("delete_all")):
-		Member.objects.all().delete()
-		Exercise.objects.all().delete()
-		Set.objects.all().delete()
-		Workout.objects.all().delete()
-		SubWorkout.objects.all().delete()
-		return HttpResponseRedirect("/admin-workouts")
-
-	if(request.GET.get("delete_sets_workouts")):
-		Set.objects.all().delete()
-		Workout.objects.all().delete()
-		return HttpResponseRedirect("/admin-workouts")
-
-	#ADDING MEMBERS 
-	if(request.GET.get("submitaddmember")):
-		context["Member_Added"] = "Member Added"
-		fname = request.GET.get("fname")
-		lname = request.GET.get("lname")
-		username = request.GET.get("username")
-		password = request.GET.get("password")
-		level = request.GET.get("level")
-
-		new_user = User.objects.create(username=username, first_name=fname, last_name=lname, password=password)
-		new_user.set_password(password)
-		new_user.is_active = True
-		new_user.save()
-
-		new_member = Member(User=new_user, Level=level)
-		new_member.save()
-		return HttpResponseRedirect("/admin-workouts")
-	#ADDING EXERCISES 
-	if(request.GET.get("submitaddexercise")):
-		context["Exercise_Added"] = "Exercise Added"
-
-		exercise_name = request.GET.get("exercise_name")
-		exercise_type = request.GET.get("exercise_type")
-		exercise_level = request.GET.get("exercise_level")
-
-		if Exercise.objects.filter(Name=exercise_name).exists() == False:
-			new_exercise = Exercise(Name=exercise_name, Type=exercise_type, Level=exercise_level)
-			new_exercise.save()
-		return HttpResponseRedirect("/admin-workouts")
-
-	# #ADDING SETS 
-	if(request.GET.get("submitaddset")):
-		context["Set_Added"] = "Set Added"
-		set_exercise_type = request.GET.get("set_type")
-		set_exercise_name = request.GET.get("set_exercise")
-		set_exercise = Exercise.objects.get(Name = set_exercise_name)
-		set_type = request.GET.get("set_type")
-		set_level = request.GET.get("set_level")
-		set_reps = request.GET.get("set_reps")
-		# set_rest_seconds = request.GET.get("set_rest_time")
-		set_order = request.GET.get("set_order")
-
-		new_set = Set(Code = set_level + set_type, Exercise = set_exercise, Level = set_level,
-		Reps=set_reps, Order=set_order)
-		new_set.save()
-		return HttpResponseRedirect("/admin-workouts")
-
-	# #ADDING WORKOUTS 
-	if(request.GET.get("submitaddworkout")):
-		context["Workout_Added"] = "Workout Added"
-  		w_level = request.GET.get("workout_level")
-  		w_week = request.GET.get("workout_week")
-  		w_day = request.GET.get("workout_day")
-  		w_date = request.GET.get("workout_date")
-		_workout = Workout(Level = w_level, Week = w_week, Day = w_day, _Date = w_date)
-		_workout.save()
-
-		Exercise_1_Type = request.GET.get("workout_set_1_type")
-		Exercise_1_Sets = request.GET.get("workout_set_1_num")
-		Exercise_1_Reps = request.GET.get("workout_set_1_reps")
-
-		if Exercise_1_Sets != "" and Exercise_1_Reps != "":
-			print(Exercise_1_Type)
-			print(Exercise_1_Sets)
-			print(Exercise_1_Reps)
-			Sub_1_Exercise = Exercise.objects.get(Level=w_level, Type=Exercise_1_Type)
-			print(Sub_1_Exercise.Name)
-			Sub_1 = SubWorkout(Sets = Exercise_1_Sets, Reps = Exercise_1_Reps)
-			Sub_1.Exercise = Sub_1_Exercise
-			Sub_1.save()
-			_workout.SubWorkouts.add(Sub_1)
-			_workout.save()
-		return HttpResponseRedirect("/admin-workouts")
-		# return render(request, "admin.html", context)	
 	return render(request, "admin_workouts.html", context)
 
 def Admin_Workouts_2(request):
@@ -587,6 +531,11 @@ def Admin_Workouts_2(request):
 		# for x in i.SubWorkouts.all():
 			# print(x.Exercise_Type)
 		# i.delete()
+	for x in context["Workout_Templates"]:
+		for z in x[1]:
+			print(z)
+			z.append([])
+			z.append([])
 
 	N_SubWorkouts = len(SubWorkouts)
 
@@ -609,6 +558,12 @@ def Admin_Workouts_2(request):
 				_Template = Workout_Template.objects.get(Level_Group=2, Week=_Week, Day=_Day)
 				_Template.Ordered_ID = (_Week - 1)*4 + _Day
 				_Template.save()
+
+			if _Template.Alloy:
+				_D[4].append("R")
+			else:
+				_D[5].append("R")
+
 				# print("Existing Workout Template: W" + str(_Template.Week) + " D" + str(_Template.Day) + " Ordered ID: " + str(_Template.Ordered_ID))
 			_Template_Code = _Week_Code + _Day_Code + " " + str(_Template.Ordered_ID)
 			# print(_D[1])
@@ -639,6 +594,14 @@ def Admin_Workouts_2(request):
 
 			if request.GET.get(_Btn_Code):
 				print("Button Pressed for: " + _Template_Code)
+
+				if request.GET["Type"] == "A":
+					_Template.Alloy = True
+					_Template.save()
+				elif request.GET["Type"] == "R":
+					_Template.Alloy = False
+					_Template.save()
+				
 				for i in range(1, N_SubWorkouts + 1):					
 					# print(i)
 					_Sub_Index = i
@@ -656,7 +619,9 @@ def Admin_Workouts_2(request):
 						# print(request.GET[_Type])
 						RPE = request.GET[_RPE]
 						Deload = request.GET[_Deload]
-						Alloy = request.GET[_Alloy]
+						Alloy = ""
+						if _Alloy in request.GET.keys():
+							Alloy = request.GET[_Alloy]
 						if (_Template.SubWorkouts.all().filter(Order = _Sub_Index).exists()):
 							print("Subworkout Exists")
 							_Subworkout = _Template.SubWorkouts.all().get(Order = _Sub_Index)
@@ -669,7 +634,7 @@ def Admin_Workouts_2(request):
 								_Subworkout.Deload = Deload
 							if Alloy != "":
 								_Subworkout.Money = Alloy
-								_SubWorkout.Alloy = True
+								_Subworkout.Alloy = True
 								_Template.Alloy = True
 							print("New Subworkout Type: " + _Subworkout.Exercise_Type)
 							_Subworkout.save()					
@@ -733,6 +698,14 @@ def Admin_Workouts_3(request):
 	["Week 4", [["Day 1", SubWorkouts, "D1", 1], ["Day 2", SubWorkouts, "D2", 2], ["Day 3", SubWorkouts, "D3", 3], ["Day 4", SubWorkouts, "D4", 4]], "W4", 4],
 	["Week 5", [["Day 1", SubWorkouts, "D1", 1], ["Day 2", SubWorkouts, "D2", 2], ["Day 3", SubWorkouts, "D3", 3]], "W5", 5]]]
 
+	for x in Templates:
+		for n in x:
+			for z in n[1]:
+				print(z)
+				z.append([])
+				z.append([])
+
+
 	context["Block_Label"] = context["Selected_Block"][0][0]
 	# if request.session["Selected_Block"] == 1:
 	# 	context["Block_Label"] = context["Blocks"][0][0]
@@ -774,6 +747,12 @@ def Admin_Workouts_3(request):
 					_Template = Workout_Template.objects.get(Level_Group=3, Week=_Week, Day=_Day, Block_Num=Selected_Block)
 					_Template.Ordered_ID = (_Week - 1)*4 + _Day
 					_Template.save()
+
+				if _Template.Alloy:
+					_D[4].append("A")
+				else:
+					_D[5].append("R")
+
 					# print("Existing Workout Template: W" + str(_Template.Week) + " D" + str(_Template.Day) + " Ordered ID: " + str(_Template.Ordered_ID))
 				_Template_Code = _Week_Code + _Day_Code + " " + str(_Template.Ordered_ID)
 				# print(_D[1])
@@ -804,6 +783,14 @@ def Admin_Workouts_3(request):
 
 				if request.GET.get(_Btn_Code):
 					print("Button Pressed for: " + _Template_Code)
+
+					if request.GET["Type"] == "A":
+						_Template.Alloy = True
+						_Template.save()
+					elif request.GET["Type"] == "R":
+						_Template.Alloy = False
+						_Template.save()
+
 					for i in range(1, N_SubWorkouts + 1):					
 						# print(i)
 						_Sub_Index = i
@@ -846,7 +833,7 @@ def Admin_Workouts_3(request):
 									_Subworkout.Deload = Deload
 								if Alloy != "":
 									_Subworkout.Money = Alloy
-									_SubWorkout.Alloy = True
+									_Subworkout.Alloy = True
 									_Template.Alloy = True
 								_Subworkout.save()
 								_Template.SubWorkouts.add(_Subworkout)
@@ -894,6 +881,13 @@ def Admin_Workouts_4(request):
 	["Week 3", [["Day 1", SubWorkouts, "D1", 1], ["Day 2", SubWorkouts, "D2", 2], ["Day 3", SubWorkouts, "D3", 3], ["Day 4", SubWorkouts, "D4", 4]], "W3", 3], 
 	["Week 4", [["Day 1", SubWorkouts, "D1", 1], ["Day 2", SubWorkouts, "D2", 2], ["Day 3", SubWorkouts, "D3", 3]], "W4", 4]]]
 
+	for x in Templates:
+		for n in x:
+			for z in n[1]:
+				print(z)
+				z.append([])
+				z.append([])
+
 	context["Block_Label"] = context["Selected_Block"][0][0]
 	# if request.session["Selected_Block"] == 1:
 	# 	context["Block_Label"] = context["Blocks"][0][0]
@@ -935,6 +929,14 @@ def Admin_Workouts_4(request):
 					_Template = Workout_Template.objects.get(Level_Group=4, Week=_Week, Day=_Day, Block_Num=Selected_Block)
 					_Template.Ordered_ID = (_Week - 1)*4 + _Day
 					_Template.save()
+
+				if _Template.Alloy:
+					_D[4].append("A")
+				else:
+					_D[5].append("R")
+
+				# if _Template.All
+
 					# print("Existing Workout Template: W" + str(_Template.Week) + " D" + str(_Template.Day) + " Ordered ID: " + str(_Template.Ordered_ID))
 				_Template_Code = _Week_Code + _Day_Code + " " + str(_Template.Ordered_ID)
 				# print(_D[1])
@@ -964,6 +966,12 @@ def Admin_Workouts_4(request):
 					print("Subworkout for: " + _Template_Code)
 
 				if request.GET.get(_Btn_Code):
+					if request.GET["Type"] == "A":
+						_Template.Alloy = True
+						_Template.save()
+					elif request.GET["Type"] == "R":
+						_Template.Alloy = False
+						_Template.save()
 					print("Button Pressed for: " + _Template_Code)
 					for i in range(1, N_SubWorkouts + 1):					
 						# print(i)
@@ -982,7 +990,9 @@ def Admin_Workouts_4(request):
 							# print(request.GET[_Type])
 							RPE = request.GET[_RPE]
 							Deload = request.GET[_Deload]
-							Alloy = request.GET[_Alloy]
+							Alloy = ""
+							if _Alloy in request.GET.keys():
+								Alloy = request.GET[_Alloy]
 							if (_Template.SubWorkouts.all().filter(Order = _Sub_Index).exists()):
 								_Subworkout = _Template.SubWorkouts.all().get(Order = _Sub_Index)
 								_Subworkout.Type = Type
@@ -994,7 +1004,7 @@ def Admin_Workouts_4(request):
 									_Subworkout.Deload = Deload
 								if Alloy != "":
 									_Subworkout.Money = Alloy
-									_SubWorkout.Alloy = True
+									_Subworkout.Alloy = True
 									_Template.Alloy = True
 								_Subworkout.save()					
 								_Template.save()		

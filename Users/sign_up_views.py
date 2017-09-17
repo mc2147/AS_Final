@@ -244,6 +244,13 @@ def Get_Weight(Max, Reps, RPE):
 	# return RPE_Dict[RPE][Reps - 1]
 	return Rounded_Weight
 
+def Get_Max(Weight, Reps, RPE):
+	Percentage = RPE_Dict[RPE][Reps - 1]
+	print("Percentage: " + str(Percentage))
+	# print("")
+	Max = (Weight*100)/Percentage
+	return Max
+
 def Generate_Workouts(Start_Date, Level, Days_List, Member):
 	Week_Days = enumerate(Days_Of_Week)
 	# Days = Days_List[]
