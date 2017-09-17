@@ -17,6 +17,8 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="http://momentjs.com/downloads/moment.js"></script>
 
+     <!-- Font Awesome --> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Material Design code -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -36,16 +38,6 @@
     </style>
 </head>
 
-
-<!-- Body --> 
-<body>
-<!--     <h1>Welcome, {{first_name}}!</h1>
-    <hr>
-
-    <img src='{% static "userpage/header_design.svg" %}'>
- -->
-
-</head>
 <body>
     <div id='header-left'>
         <h1>Welcome, {{first_name}}!</h1>
@@ -67,40 +59,34 @@
     <img id='user_design_img' src='{% static "userpage/header_design.svg" %}'>
 
 <form method="POST" id="Calendar_Form">{% csrf_token %}
+
     <div id="left_container">
         <div id="date_text_container">
-            <!-- <p> Date: </p> -->
+            <p> Here's your workout for </p>
             <p id="date_text" value={{Date}}>{{Date}}<p>
         </div>
-        <p>Date: {{Date}}</p>
-
-        {{Curr_Year}}
-        {{Curr_Month}}
-        {{Curr_Day}}
 
         <hr id='dummy_divider'>
+
         <div id="datepicker"></div>
-        <!-- Test -->
+        <br />
+        <div id="month_nav">
+                <span id="prev" class="month_button"><i class="fa fa-arrow-left" aria-hidden="true" style="color:white"></i> Month</span>
+            <span id="next" class="month_button">Month <i class="fa fa-arrow-right" aria-hidden="true" style="color:white"></i> </span>
+        </div>
         <!-- <div id="summary">Content goes here</div> -->
     </div>
 </form>
 
     <div id='right_container'>
 
-<!--         {% for Day in Workout_Day.1 %}
-        <div id='stats_info'>
-        <h3 style="margin-bottom:1vw;">Selected Date:</h3>
-        <h2 style="margin-top:1vw;">{{Date}}</h2>
-        <h3>No Workout For This Day</h3>
-        </div>
-        {% endfor %}
+    <div id='stats_info'>
+        <h2>{{Date}}</h2>
+        <h3 style="display:inline-block;">{{Workout_Info}}</h3>
+        <h3 style="margin-top:0px; color:red; display:inline-block;">{{Alloy}}</h3>
+        <hr>
+    </div>
 
- -->        <div id='stats_info'>
-            <h2>{{Date}}</h2>
-            <h3 style="display:inline-block;">{{Workout_Info}}</h3>
-            <h3 style="margin-top:0px; color:red; display:inline-block;">{{Alloy}}</h3>
-            <hr>
-            </div>
         {% for Day in Workout_Day.0 %}
         <form method="GET">
         <table class='table_calendar' style="margin-top:-1vw;">
@@ -502,32 +488,66 @@
                 var final_list = {{ final_list | safe }};
                 var final_list_len = final_list.length; 
 
+
+
                 var workout_list = [] 
 
                 for (i = 0; i < final_list_len; i++) {
                     var workout_date = final_list[i]
                     var workout_string = workout_date.month + '/' + workout_date.day + '/' + workout_date.year; 
+
+                    // if today is a workout day
+                    if (workout_string === currentDate) {
+                        $('#date_text').css('color','orange');
+                    }
+
                     workout_list.push(new Date(workout_string)); 
                 };
 
                 var workout_list_len = workout_list.length; 
 
+
+                var isWorkout = false; 
                 for (i = 0; i < workout_list_len; i++) {
-              
                     // if workout date and date on the calendar are the same 
-                    if (workout_list[i].getTime() === date.getTime()){
-                        return [true, 'workout']; // set styling to 'workout' (see style tag below)
+                    var workoutDay = (workout_list[i].getTime() === date.getTime()); 
+
+                    if (workoutDay) {
+                        isWorkout = true; 
                     }
                 };
 
-                return [true, ''];
+                var today = ((new Date(currentDate)).getTime() === date.getTime());
+
+                if (today) {
+
+                    if (isWorkout) {
+                        return [true, 'workoutToday']; 
+                    } else {
+                        return [true, 'today']; 
+                    }
+                    
+                }
+                else {
+                    if (isWorkout) {
+                        return [true, 'workout']; 
+                    } else {
+                        return [true, '']; 
+                    }
+                }
+                
             },
             onSelect: function (date) {
                 //var newDate = $(this).val();
                 $( "#date_text" ).text(date);
                 updateTempDate();
             }
-         })
+         });
+
+        // For custom button functionality
+        $('#next, #prev').on('click', function (e) {
+            $('.ui-datepicker-' + e.target.id).trigger("click");
+        });
     });
 
 
@@ -579,7 +599,12 @@
     }
 
     .today .ui-state-default {
-        border: 1px solid black;
+        box-shadow: 0 0 1vw 0.2vw rgba(0, 38, 255, 0.56);
+    }
+
+    .workoutToday .ui-state-default {
+        background-color: orange;
+        box-shadow: 0 0 1vw 0.2vw rgba(0, 38, 255, 0.56);
     }
 
 </style>

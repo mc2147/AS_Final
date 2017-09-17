@@ -83,12 +83,20 @@ table.table_calendar {
 	margin: 0 auto;
 }
 
-
 td, th {
 	border: 0.1em solid rgba(83,109,254,0.75);
 	padding: 0;
 	width: 11.42%;
 	position: relative;
+}
+
+
+table.table_calendar td input {
+	font-size: 1vw;
+}
+
+table.table_calendar td select {
+	font-size: 1vw;
 }
 
 textarea {
@@ -125,6 +133,7 @@ table.ui-datepicker-calendar td {
 	padding: 1vw;
 	border: 1px solid rgba(0, 10, 125, 0.2);
 	text-decoration: none;
+	font-size: 0.75vw;
 }
 
 table.ui-datepicker-calendar th {
@@ -132,6 +141,7 @@ table.ui-datepicker-calendar th {
 	background-color: rgba(83,109,254, 0.75);
 	color: white;
 	font-weight: 400;
+	font-size: 1vw;
 
 }
 
@@ -149,7 +159,6 @@ table.ui-datepicker-calendar th {
     color: black;
 }
 
-
 #datepicker {
 	margin: 0 auto;
 	width: 80%;
@@ -166,6 +175,7 @@ table.ui-datepicker-calendar th {
 }
 
 #dummy_divider {
+	border: none;
 	border-top: 1px solid rgba(0, 0, 0, 0.3);
 	width: 80%;
 	margin: 0 auto;
@@ -207,4 +217,48 @@ table.ui-datepicker-calendar th {
  background-color: rgb(4, 23, 125);
  box-shadow: 0 0 1vw 0.2vw rgba(0, 38, 255, 0.56);
  border-bottom: 0.2vw solid rgba(255, 255, 255, 0.85);
+}
+
+.ui-datepicker-title {
+	font-size: 1.5vw;
+	text-align: center;
+	margin: 0 auto;
+	margin-bottom: 1vw;
+}
+
+#date_text_container {
+	text-align: center;
+}
+
+#date_text_container p {
+	font-size: 1.15vw;
+}
+
+#date_text {
+	color: gray;
+	margin: 0;
+}
+
+
+.ui-datepicker-next, .ui-datepicker-prev {
+    display: none;
+}
+
+
+#month_nav {
+	display: flex;
+	justify-content: space-between;
+	width: 80%;
+	margin: 0 auto;
+}
+
+.month_button {
+	background-color: rgb(83,109,254);
+	color: white;
+    cursor: pointer;
+    border-radius: 0.2vw;
+    border: none;
+    font-size: 1vw;
+    font-family: 'Cabin', sans-serif;
+    padding: 0.5vw;
 }
